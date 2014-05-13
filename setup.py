@@ -10,7 +10,7 @@ REQUIRES = open('requirements.txt').read()
 
 
 setup(
-  name='modeled',
+  name='QtQuery',
   version=VERSION,
   description="A jQuery inspired Pythonic Qt experience.",
 
