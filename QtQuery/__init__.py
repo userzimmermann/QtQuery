@@ -61,9 +61,10 @@ class QMeta(type):
                         self.id = value
                         continue
                     try:
-                        setter = getattr(self.q, 'set' + camelize(name))
+                        setter = object.__getattribute__(
+                          self, 'set' + camelize(name))
                     except AttributeError:
-                        signal = getattr(self.q, name)
+                        signal = object.__getattribute__(self, name)
                         for func in value:
                             signal.connect(func)
                     else:
@@ -79,14 +80,14 @@ class QMeta(type):
 
             def __getattribute__(self, name):
                 try:
-                    QObject.__getattribute__(self, 'set' + camelize(name))
+                    object.__getattribute__(self, 'set' + camelize(name))
                 except AttributeError:
                     pass
                 else:
                     try:
-                        obj = QObject.__getattribute__(self, name)
+                        obj = object.__getattribute__(self, name)
                     except AttributeError:
-                        obj = QObject.__getattribute__(
+                        obj = object.__getattribute__(
                           self, 'is' + camelize(name))
                     value = obj()
                     if isinstance(value, (QObject, sip.simplewrapper)):
@@ -99,7 +100,7 @@ class QMeta(type):
                 try:
                     setter = getattr(self, 'set' + camelize(name))
                 except AttributeError:
-                    QObject.__setattr__(self, name, value)
+                    object.__setattr__(self, name, value)
                 else:
                     setter(value)
 
@@ -152,7 +153,7 @@ class Q(with_metaclass(QMeta, object)):
         for q in qobjects:
             if not isinstance(q, (QObject, sip.simplewrapper)):
                 raise TypeError(type(q))
-            self.qobjects.append(Q(q))
+            self.qlist.append(Q(q))
 
     def __getitem__(self, index):
         return self.qlist[index]
@@ -173,7 +174,7 @@ class Q(with_metaclass(QMeta, object)):
             return tuple(values)
 
     def __setattr__(self, name, value):
-        if name == 'qobjects':
+        if name == 'qlist':
             object.__setattr__(self, name, value)
         for q in self.qlist:
             try:
