@@ -32,9 +32,13 @@ except ImportError:
     except ImportError:
         from PySide import QtCore, QtGui as QtWidgets
 
+from .signal import Signal
+
 
 QObject = QtCore.QObject
 QType = type(QtCore.QObject)
+
+QSignal = QtCore.pyqtBoundSignal
 
 
 class QMeta(type):
@@ -82,13 +86,22 @@ class QMeta(type):
                 try:
                     object.__getattribute__(self, 'set' + camelize(name))
                 except AttributeError:
-                    return object.__getattribute__(self, name)
+                    attr = object.__getattribute__(self, name)
+                    if isinstance(attr, QSignal):
+                        try:
+                            signal = self.__dict__[name]
+                        except KeyError:
+                            signal = self.__dict__[name] = Signal(
+                              name, attr)
+                            attr.connect(signal.run)
+                        return signal
+                    return attr
                 try:
-                    obj = object.__getattribute__(self, name)
+                    getter = object.__getattribute__(self, name)
                 except AttributeError:
-                    obj = object.__getattribute__(
+                    getter = object.__getattribute__(
                       self, 'is' + camelize(name))
-                value = obj()
+                value = getter()
                 if isinstance(value, (QObject, sip.simplewrapper)):
                     return Q(value)
                 return value
@@ -98,7 +111,23 @@ class QMeta(type):
                 try:
                     setter = getattr(self, 'set' + camelize(name))
                 except AttributeError:
-                    object.__setattr__(self, name, value)
+                    try:
+                        attr = object.__getattribute__(self, name)
+                    except AttributeError:
+                        object.__setattr__(self, name, value)
+                    else:
+                        if isinstance(attr, QSignal):
+                            try:
+                                signal = self.__dict__[name]
+                            except KeyError:
+                                signal = self.__dict__[name] = Signal(
+                                  name, attr)
+                                attr.connect(signal.run)
+                            if value is not signal:
+                                if callable(value):
+                                    signal.slots = [value]
+                                else:
+                                    signal.slots = value
                 else:
                     setter(value)
 
