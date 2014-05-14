@@ -137,17 +137,23 @@ class QMeta(type):
                     qclass = getattr(QtWidgets, 'Q' + qclass)
                 elif isinstance(qclass, Q):
                     qclass = qclass.qclass
-                for q in self.children():
-                    if isinstance(q, qclass):
-                        for name, query in filters.items():
-                            try:
-                                value = getattr(q, name)
-                            except AttributeError:
-                                break
-                            if query != value:
-                                break
-                        else:
-                            qlist.append(q)
+
+                def find(q):
+                    for q in q.children():
+                        print(q)
+                        if isinstance(q, qclass):
+                            for name, query in filters.items():
+                                try:
+                                    value = getattr(q, name)
+                                except AttributeError:
+                                    break
+                                if query != value:
+                                    break
+                            else:
+                                qlist.append(q)
+                        find(q)
+
+                find(self)
                 return Q(qlist)
 
             def __repr__(self):
