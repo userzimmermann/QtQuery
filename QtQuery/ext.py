@@ -17,9 +17,16 @@
 # You should have received a copy of the GNU General Public License
 # along with QtQuery. If not, see <http://www.gnu.org/licenses/>.
 
+from six import text_type as unicode
+
 
 class Base(object):
     pass
+
+
+class QString(Base):
+    def __repr__(self):
+        return '<%s %s>' % (type(self).__name__, repr(unicode(self)))
 
 
 class QObject(Base):
