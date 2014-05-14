@@ -32,7 +32,6 @@ except ImportError:
     except ImportError:
         from PySide import QtCore, QtGui as QtWidgets
 
-from . import ext
 from .signal import Signal
 
 
@@ -234,3 +233,6 @@ class Q(with_metaclass(QMeta, object)):
 
     def __repr__(self):
         return 'Q(%s)' % repr(self.qlist)
+
+
+from . import ext
