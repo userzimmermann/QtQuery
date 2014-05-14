@@ -82,19 +82,17 @@ class QMeta(type):
                 try:
                     object.__getattribute__(self, 'set' + camelize(name))
                 except AttributeError:
-                    pass
-                else:
-                    try:
-                        obj = object.__getattribute__(self, name)
-                    except AttributeError:
-                        obj = object.__getattribute__(
-                          self, 'is' + camelize(name))
-                    value = obj()
-                    if isinstance(value, (QObject, sip.simplewrapper)):
-                        return Q(value)
-                    return value
+                    return object.__getattribute__(self, name)
+                try:
+                    obj = object.__getattribute__(self, name)
+                except AttributeError:
+                    obj = object.__getattribute__(
+                      self, 'is' + camelize(name))
+                value = obj()
+                if isinstance(value, (QObject, sip.simplewrapper)):
+                    return Q(value)
+                return value
 
-                return QObject.__getattribute__(self, name)
 
             def __setattr__(self, name, value):
                 try:
