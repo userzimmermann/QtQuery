@@ -44,6 +44,10 @@ QSignal = QtCore.pyqtBoundSignal
 
 class QMeta(type):
 
+    @property
+    def button(cls):
+        return ButtonDeco()
+
     def __instancecheck__(cls, obj):
         return isinstance(obj, QObject) and hasattr(obj, 'qclass')
 
@@ -243,3 +247,4 @@ class Q(with_metaclass(QMeta, object)):
 
 
 from . import ext
+from .button import ButtonDeco
