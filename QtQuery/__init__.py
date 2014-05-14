@@ -32,6 +32,7 @@ except ImportError:
     except ImportError:
         from PySide import QtCore, QtGui as QtWidgets
 
+from . import ext
 from .signal import Signal
 
 
@@ -48,8 +49,18 @@ class QMeta(type):
 
     @cached
     def __getitem__(cls, _qclass):
-        class Q_(_qclass):
+        for qclass in _qclass.mro():
+            try:
+                _qext = getattr(ext, qclass.__name__)
+                break
+            except AttributeError:
+                pass
+        else:
+            _qext = ext.Base
+
+        class Q_(_qext, _qclass):
             qclass = _qclass
+            qext = _qext
 
             def __new__(cls, _=None, **kwargs):
                 return cls.qclass.__new__(cls)
@@ -73,14 +84,6 @@ class QMeta(type):
                             signal.connect(func)
                     else:
                         setter(value)
-
-            @property
-            def id(self):
-                return self.__dict__.get('id') or hex(id(self))
-
-            @id.setter
-            def id(self, value):
-                self.__dict__['id'] = value
 
             def __getattribute__(self, name):
                 try:
@@ -155,9 +158,6 @@ class QMeta(type):
 
                 find(self)
                 return Q(qlist)
-
-            def __repr__(self):
-                return '<%s id=%s>' % (type(self).__name__, repr(self.id))
 
         Q_.__name__ = 'Q[%s]' % (_qclass.__name__)
         return Q_
