@@ -19,6 +19,8 @@
 
 from six import text_type as unicode
 
+from . import Q
+
 
 class Base(object):
     pass
@@ -38,3 +40,10 @@ class QObject(Base):
 
     def __repr__(self):
         return '<%s id=%s>' % (type(self).__name__, repr(self.id))
+
+
+class QWidget(QObject):
+    def setLayout(self, qlayout):
+        if isinstance(qlayout, str):
+            qlayout = getattr(Q, qlayout + 'Layout')()
+        self.qclass.setLayout(self, qlayout)
