@@ -114,25 +114,31 @@ class QMeta(type):
                 try:
                     setter = getattr(self, 'set' + camelize(name))
                 except AttributeError:
-                    try:
-                        attr = object.__getattribute__(self, name)
-                    except AttributeError:
-                        object.__setattr__(self, name, value)
-                    else:
-                        if isinstance(attr, QSignal):
-                            try:
-                                signal = self.__dict__[name]
-                            except KeyError:
-                                signal = self.__dict__[name] = Signal(
-                                  name, attr)
-                                attr.connect(signal.run)
-                            if value is not signal:
-                                if callable(value):
-                                    signal.slots = [value]
-                                else:
-                                    signal.slots = value
+                    pass
                 else:
                     setter(value)
+                    return
+
+                try:
+                    attr = object.__getattribute__(self, name)
+                except AttributeError:
+                    pass
+                else:
+                    if isinstance(attr, QSignal):
+                        try:
+                            signal = self.__dict__[name]
+                        except KeyError:
+                            signal = self.__dict__[name] = Signal(
+                              name, attr)
+                            attr.connect(signal.run)
+                        if value is not signal:
+                            if callable(value):
+                                signal.slots = [value]
+                            else:
+                                signal.slots = value
+                        return
+
+                object.__setattr__(self, name, value)
 
             def __call__(self, qclass, **filters):
                 qlist = []
