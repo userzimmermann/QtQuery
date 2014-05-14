@@ -110,7 +110,6 @@ class QMeta(type):
                     return Q(value)
                 return value
 
-
             def __setattr__(self, name, value):
                 try:
                     setter = getattr(self, 'set' + camelize(name))
@@ -141,9 +140,11 @@ class QMeta(type):
 
                 object.__setattr__(self, name, value)
 
-            def __call__(self, qclass, **filters):
+            def __call__(self, qclass=None, **filters):
                 qlist = []
-                if isinstance(qclass, str):
+                if not qclass:
+                    qclass = QObject
+                elif isinstance(qclass, str):
                     qclass = getattr(QtWidgets, 'Q' + qclass)
                 elif isinstance(qclass, Q):
                     qclass = qclass.qclass
@@ -165,6 +166,10 @@ class QMeta(type):
 
                 find(self)
                 return Q(qlist)
+
+            def __getitem__(self, id):
+                return self(id=id)
+
 
         Q_.__name__ = 'Q[%s]' % (_qclass.__name__)
         return Q_
