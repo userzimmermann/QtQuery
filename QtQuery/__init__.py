@@ -28,9 +28,10 @@ try:
     from PyQt5 import QtCore, QtGui, QtWidgets
 except ImportError:
     try:
-        from PyQt4 import QtCore, QtGui as QtWidgets
+        from PyQt4 import QtCore, QtGui
     except ImportError:
-        from PySide import QtCore, QtGui as QtWidgets
+        from PySide import QtCore, QtGui
+    QtWidgets = QtGui
 
 from .signal import Signal
 
