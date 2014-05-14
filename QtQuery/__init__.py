@@ -71,6 +71,7 @@ class QMeta(type):
 
                 self.qclass.__init__(self, *args)
                 self.q = self
+                self.qext.__init__(self, kwargs)
                 for name, value in kwargs.items():
                     if name == "id":
                         self.id = value

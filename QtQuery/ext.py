@@ -23,7 +23,8 @@ from . import Q
 
 
 class Base(object):
-    pass
+    def __init__(self, props):
+        pass
 
 
 class QString(Base):
@@ -43,6 +44,19 @@ class QObject(Base):
 
 
 class QWidget(QObject):
+    def __init__(self, props):
+        QObject.__init__(self, props)
+        layout = props.pop('layout', None)
+        children = props.pop('children', ())
+        if layout:
+            self.setLayout(layout)
+            layout = self.qclass.layout(self)
+            for q in children:
+                layout.addWidget(q)
+        else:
+            for q in children:
+                q.setParent(self)
+
     def setLayout(self, qlayout):
         if isinstance(qlayout, str):
             qlayout = getattr(Q, qlayout + 'Layout')()
