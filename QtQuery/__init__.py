@@ -84,9 +84,20 @@ class QMeta(type):
                         setter = object.__getattribute__(
                           self, 'set' + camelize(name))
                     except AttributeError:
-                        signal = object.__getattribute__(self, name)
-                        for func in value:
-                            signal.connect(func)
+                        attr = object.__getattribute__(self, name)
+                        if isinstance(attr, QSignal):
+                            try:
+                                signal = self.__dict__[name]
+                            except KeyError:
+                                signal = self.__dict__[name] = Signal(
+                                  name, attr)
+                                attr.connect(signal.run)
+                            if value is not signal:
+                                if callable(value):
+                                    signal.slots = [value]
+                                else:
+                                    signal.slots = value
+                            return
                     else:
                         setter(value)
 
