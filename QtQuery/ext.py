@@ -73,6 +73,18 @@ class QWidget(QObject):
     def __iter__(self):
         raise TypeError
 
+    @property
+    def size(self):
+        return Q(self.qclass.size(self))
+
+    @property
+    def width(self):
+        return self.qclass.width(self)
+
+    @property
+    def height(self):
+        return self.qclass.height(self)
+
     def setAlignment(self, qalign):
         qalign = Alignment(qalign)
         self.qclass.setAlignment(self, qalign)
