@@ -20,7 +20,7 @@
 from six import text_type as unicode
 
 from . import Q
-from .align import Alignment
+from .align import Alignment, Aligned
 
 
 class Base(object):
@@ -56,10 +56,16 @@ class QWidget(QObject):
                 try:
                     row = iter(q)
                 except TypeError:
-                    layout.addWidget(q)
+                    if isinstance(q, Aligned):
+                        layout.addWidget(q.q, 0, q.qalign)
+                    else:
+                        layout.addWidget(q)
                 else:
                     for coln, q in enumerate(row):
-                        layout.addWidget(q, rown, coln)
+                        if isinstance(q, Aligned):
+                            layout.addWidget(q.q, rown, coln, q.qalign)
+                        else:
+                            layout.addWidget(q, rown, coln)
         else:
             for q in children:
                 q.setParent(self)
