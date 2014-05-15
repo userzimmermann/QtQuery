@@ -19,8 +19,8 @@
 
 from six import text_type as unicode
 
-from . import Q, QtCore
-from .align import ALIGNMENT
+from . import Q
+from .align import Alignment
 
 
 class Base(object):
@@ -68,13 +68,7 @@ class QWidget(QObject):
         raise TypeError
 
     def setAlignment(self, qalign):
-        if isinstance(qalign, str):
-            flags = [ALIGNMENT[flag] for flag in qalign]
-            qalign = flags[0]
-            for flag in flags[1:]:
-                qalign |= flag
-        else:
-            qalign = QtCore.Qt.Alignment(qalign)
+        qalign = Alignment(qalign)
         self.qclass.setAlignment(self, qalign)
 
     def setLayout(self, qlayout):
