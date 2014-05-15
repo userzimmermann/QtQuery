@@ -42,5 +42,7 @@ class ButtonDeco(object):
           }
         id = id or self.id
         if id:
+            if id is True:
+                id = func.__name__ + 'Button'
             props['id'] = id
         return Q.PushButton(**props)
