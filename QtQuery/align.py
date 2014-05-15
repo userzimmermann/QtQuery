@@ -17,9 +17,9 @@
 # You should have received a copy of the GNU General Public License
 # along with QtQuery. If not, see <http://www.gnu.org/licenses/>.
 
-__all__ = ['ALIGNMENT', 'Alignment']
+__all__ = ['ALIGNMENT', 'Alignment', 'Aligned']
 
-from . import QtCore
+from . import Q, QtCore
 
 
 ALIGNMENT = {
@@ -41,3 +41,9 @@ class Alignment(QtCore.Qt.Alignment):
             for flag in flags[1:]:
                 qalign |= flag
         QtCore.Qt.Alignment.__init__(self, qalign)
+
+
+class Aligned(object):
+    def __init__(self, qalign, q):
+        self.qalign = Alignment(qalign)
+        self.q = Q(q)
