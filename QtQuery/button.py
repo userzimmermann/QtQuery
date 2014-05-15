@@ -36,16 +36,11 @@ class ButtonDeco(object):
                 self.text = text
             return self
 
-        props = {}
+        props = {
+          'text': text or self.text or func.__name__.capitalize(),
+          'clicked': func,
+          }
         id = id or self.id
         if id:
             props['id'] = id
-        props['text'] = text or self.text or func.__name__.capitalize()
-
-        def button(*args):
-            q = Q.PushButton(**props)
-            q.clicked += lambda: func(*args)
-            return q
-
-        func.button = button
-        return func
+        return Q.PushButton(**props)
