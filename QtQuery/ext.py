@@ -51,11 +51,20 @@ class QWidget(QObject):
         if layout:
             self.setLayout(layout)
             layout = self.qclass.layout(self)
-            for q in children:
-                layout.addWidget(q)
+            for rown, q in enumerate(children):
+                try:
+                    row = iter(q)
+                except TypeError:
+                    layout.addWidget(q)
+                else:
+                    for coln, q in enumerate(row):
+                        layout.addWidget(q, rown, coln)
         else:
             for q in children:
                 q.setParent(self)
+
+    def __iter__(self):
+        raise TypeError
 
     def setLayout(self, qlayout):
         if isinstance(qlayout, str):
