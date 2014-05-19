@@ -65,7 +65,7 @@ class QMeta(type):
         return isinstance(obj, QObject) and hasattr(obj, 'qclass')
 
     @cached
-    def __getitem__(cls, _qclass):
+    def __getitem__(_Q, _qclass):
         for qclass in _qclass.mro():
             try:
                 _qext = getattr(ext, qclass.__name__)
@@ -76,6 +76,7 @@ class QMeta(type):
             _qext = ext.Base
 
         class Q_(_qext, _qclass):
+            Q = _Q
             qclass = _qclass
             qext = _qext
 
