@@ -54,6 +54,10 @@ class QWidget(QObject):
             self.setLayout(layout)
             layout = self.qclass.layout(self)
             for rown, q in enumerate(children):
+                if isinstance(q, str):
+                    q = self.Q.Label(text=q)
+                    layout.addWidget(q)
+                    continue
                 try:
                     row = iter(q)
                 except TypeError:
@@ -69,7 +73,10 @@ class QWidget(QObject):
                         layout.addWidget(q)
                 else:
                     for coln, q in enumerate(row):
-                        if isinstance(q, Aligned):
+                        if isinstance(q, str):
+                            q = self.Q.Label(text=q)
+                            layout.addWidget(q, rown, coln)
+                        elif isinstance(q, Aligned):
                             layout.addWidget(q.q, rown, coln, q.qalign)
                         else:
                             layout.addWidget(q, rown, coln)
