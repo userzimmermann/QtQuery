@@ -89,6 +89,18 @@ class QMeta(type):
             qlabel = qlabel.text
         return Q.Label(text=qlabel)
 
+    def panel(Q, children):
+        return Q.Widget(children=children)
+
+    def hbox(Q, children):
+        return Q.Widget(layout='HBox', children=children)
+
+    def vbox(Q, children):
+        return Q.Widget(layout='VBox', children=children)
+
+    def grid(Q, children):
+        return Q.Widget(layout='Grid', children=children)
+
     @property
     def aligned(self):
         return Aligned
