@@ -44,9 +44,18 @@ QSignal = QtCore.pyqtBoundSignal
 
 class QMeta(type):
 
+    def label(Q, qlabel):
+        if isinstance(qlabel, Q.Label.qclass):
+            qlabel = qlabel.text
+        return Q.Label(text=qlabel)
+
     @property
     def aligned(self):
         return Aligned
+
+    @property
+    def labeled(self):
+        return Labeled
 
     @property
     def button(cls):
@@ -263,4 +272,5 @@ class Q(with_metaclass(QMeta, object)):
 
 from . import ext
 from .align import Aligned
+from .label import Labeled
 from .button import ButtonDeco
