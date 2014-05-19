@@ -21,6 +21,7 @@ from six import text_type as unicode
 
 from . import Q
 from .align import Alignment, Aligned
+from .label import Labeled
 
 
 class Base(object):
@@ -58,6 +59,12 @@ class QWidget(QObject):
                 except TypeError:
                     if isinstance(q, Aligned):
                         layout.addWidget(q.q, 0, q.qalign)
+                    elif isinstance(q, Labeled):
+                        qlayout = {'<': 'HBox', '^': 'VBox'}[q.qpos]
+                        qpanel = Q.Widget(layout=qlayout, children=[
+                          q.qlabel, q.q
+                          ])
+                        layout.addWidget(qpanel)
                     else:
                         layout.addWidget(q)
                 else:
