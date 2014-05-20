@@ -38,16 +38,16 @@ class QTools(type):
             qlabel = qlabel.text
         return Q.Label(text=qlabel)
 
-    def panel(Q, children):
+    def panel(Q, children=None):
         return Q.Widget(children=children)
 
-    def hbox(Q, children):
+    def hbox(Q, children=None):
         return Q.Widget(layout='HBox', children=children)
 
-    def vbox(Q, children):
+    def vbox(Q, children=None):
         return Q.Widget(layout='VBox', children=children)
 
-    def grid(Q, children):
+    def grid(Q, children=None):
         return Q.Widget(layout='Grid', children=children)
 
     @property
