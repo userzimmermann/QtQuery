@@ -20,11 +20,9 @@
 __all__ = ['ButtonDeco']
 
 
-from . import Q
-
-
 class ButtonDeco(object):
-    def __init__(self):
+    def __init__(self, Q):
+        self.Q = Q
         self.id = None
         self.text = None
 
@@ -45,4 +43,4 @@ class ButtonDeco(object):
             if id is True:
                 id = func.__name__ + 'Button'
             props['id'] = id
-        return Q.PushButton(**props)
+        return self.Q.PushButton(**props)

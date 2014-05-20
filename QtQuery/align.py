@@ -23,7 +23,7 @@ __all__ = ['ALIGNMENT', 'Alignment', 'Aligned']
 
 from moretools import cached
 
-from . import Q, QtCore
+from . import QtCore
 
 
 ALIGNMENT = {
@@ -54,7 +54,7 @@ class AlignedMeta(type):
             qalign = Alignment(_qalign)
 
             def __init__(self, q):
-                self.q = Q(q)
+                self.q = cls.Q(q)
 
         Aligned.__module__ = cls.__module__
         Aligned.__name__ = '%s[%s]' % (cls.__name__, repr(_qalign))
@@ -74,10 +74,10 @@ class AlignedMeta(type):
                 q = self.attr(*args, **kwargs)
                 return self.consumer(q)
 
-        return Proxy(cls, getattr(Q, name))
+        return Proxy(cls, getattr(cls.Q, name))
 
 
 class Aligned(with_metaclass(AlignedMeta, object)):
     def __init__(self, qalign, q):
         self.qalign = Alignment(qalign)
-        self.q = Q(q)
+        self.q = self.Q(q)

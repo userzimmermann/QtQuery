@@ -17,48 +17,40 @@
 # You should have received a copy of the GNU General Public License
 # along with QtQuery. If not, see <http://www.gnu.org/licenses/>.
 
-from six import with_metaclass
-
-__all__ = ['Labeled']
-
-from moretools import cached
+__all__ = ['ID']
 
 
-class LabeledMeta(type):
-    @cached
-    def __getitem__(cls, _qpos):
-        class Labeled(cls):
-            qpos = _qpos
+class ID(object):
+    def __init__(self, Q):
+        self.Q = Q
 
-            def __init__(self, qlabel, q=None):
-                self.qlabel = cls.Q.label(qlabel)
-                ## self.q = q and cls.Q(q)
-                self.q = q
+    def __getitem__(self, id):
+        self.id = id
+        return self
 
-        return Labeled
-
-
-class Labeled(with_metaclass(LabeledMeta, object)):
-    def __init__(self, qpos, qlabel, q=None):
-        self.qpos = qpos
-        self.qlabel = self.Q.label(qlabel)
-        self.q = q and self.Q(q)
+    def __call__(self, q):
+        q = self.Q(q)
+        q.id = self.id
+        return q
 
     def __getattr__(self, name):
         class Proxy(object):
             def __init__(self, consumer, attr):
                 self.consumer = consumer
                 self.attr = attr
-                ## self.attr = getattr(Q, attr)
 
             def __getitem__(self, arg):
                 return type(self)(self.consumer, self.attr[arg])
+
+            def __getattr__(self, name):
+                return type(self)(self.consumer, getattr(self.attr, name))
 
             def __call__(self, *args, **kwargs):
                 q = self.attr(*args, **kwargs)
                 return self.consumer(q)
 
         def consumer(q):
-            return type(self)(self.qlabel, q)
+            q.id = self.id
+            return q
 
         return Proxy(consumer, getattr(self.Q, name))

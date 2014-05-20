@@ -33,6 +33,7 @@ except ImportError:
         from PySide import QtCore, QtGui
     QtWidgets = QtGui
 
+from .tools import QTools
 from .signal import Signal
 
 
@@ -42,76 +43,7 @@ QType = type(QtCore.QObject)
 QSignal = QtCore.pyqtBoundSignal
 
 
-class ID(object):
-    def __init__(self, Q):
-        self.Q = Q
-
-    def __getitem__(self, id):
-        self.id = id
-        return self
-
-    def __call__(self, q):
-        q = self.Q(q)
-        q.id = self.id
-        return q
-
-    def __getattr__(self, name):
-        class Proxy(object):
-            def __init__(self, consumer, attr):
-                self.consumer = consumer
-                self.attr = attr
-
-            def __getitem__(self, arg):
-                return type(self)(self.consumer, self.attr[arg])
-
-            def __getattr__(self, name):
-                return type(self)(self.consumer, getattr(self.attr, name))
-
-            def __call__(self, *args, **kwargs):
-                q = self.attr(*args, **kwargs)
-                return self.consumer(q)
-
-        def consumer(q):
-            q.id = self.id
-            return q
-
-        return Proxy(consumer, getattr(Q, name))
-
-
-class QMeta(type):
-
-    @property
-    def id(Q):
-        return ID(Q)
-
-    def label(Q, qlabel):
-        if isinstance(qlabel, Q.Label.qclass):
-            qlabel = qlabel.text
-        return Q.Label(text=qlabel)
-
-    def panel(Q, children):
-        return Q.Widget(children=children)
-
-    def hbox(Q, children):
-        return Q.Widget(layout='HBox', children=children)
-
-    def vbox(Q, children):
-        return Q.Widget(layout='VBox', children=children)
-
-    def grid(Q, children):
-        return Q.Widget(layout='Grid', children=children)
-
-    @property
-    def aligned(self):
-        return Aligned
-
-    @property
-    def labeled(self):
-        return Labeled
-
-    @property
-    def button(cls):
-        return ButtonDeco()
+class QMeta(QTools):
 
     def __instancecheck__(cls, obj):
         return isinstance(obj, QObject) and hasattr(obj, 'qclass')
@@ -324,6 +256,3 @@ class Q(with_metaclass(QMeta, object)):
 
 
 from . import ext
-from .align import Aligned
-from .label import Labeled
-from .button import ButtonDeco
