@@ -27,11 +27,12 @@ from moretools import cached
 class LabeledMeta(type):
     @cached
     def __getitem__(cls, _qpos):
+        Q = cls.Q
         class Labeled(cls):
             qpos = _qpos
 
             def __init__(self, qlabel, q=None):
-                self.qlabel = cls.Q.label(qlabel)
+                self.qlabel = Q.label(qlabel)
                 ## self.q = q and cls.Q(q)
                 self.q = q
 
@@ -40,11 +41,13 @@ class LabeledMeta(type):
 
 class Labeled(with_metaclass(LabeledMeta, object)):
     def __init__(self, qpos, qlabel, q=None):
+        Q = self.Q
         self.qpos = qpos
-        self.qlabel = self.Q.label(qlabel)
-        self.q = q and self.Q(q)
+        self.qlabel = Q.label(qlabel)
+        self.q = q and Q(q)
 
     def __getattr__(self, name):
+        Q = self.Q
         class Proxy(object):
             def __init__(self, consumer, attr):
                 self.consumer = consumer
@@ -61,4 +64,4 @@ class Labeled(with_metaclass(LabeledMeta, object)):
         def consumer(q):
             return type(self)(self.qlabel, q)
 
-        return Proxy(consumer, getattr(self.Q, name))
+        return Proxy(consumer, getattr(Q, name))

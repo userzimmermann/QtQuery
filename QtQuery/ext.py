@@ -19,8 +19,7 @@
 
 from six import text_type as unicode
 
-from . import Q
-from .align import Alignment, Aligned
+from .align import Aligned
 from .label import Labeled
 
 
@@ -47,6 +46,7 @@ class QObject(Base):
 
 class QWidget(QObject):
     def __init__(self, props):
+        Q = self.Q
         QObject.__init__(self, props)
         layout = props.pop('layout', None)
         children = props.pop('children', ())
@@ -55,7 +55,7 @@ class QWidget(QObject):
             layout = self.qclass.layout(self)
             for rown, q in enumerate(children):
                 if isinstance(q, str):
-                    q = self.Q.Label(text=q)
+                    q = Q.Label(text=q)
                     layout.addWidget(q)
                     continue
                 try:
@@ -74,7 +74,7 @@ class QWidget(QObject):
                 else:
                     for coln, q in enumerate(row):
                         if isinstance(q, str):
-                            q = self.Q.Label(text=q)
+                            q = Q.Label(text=q)
                             layout.addWidget(q, rown, coln)
                         elif isinstance(q, Aligned):
                             layout.addWidget(q.q, rown, coln, q.qalign)
@@ -89,6 +89,7 @@ class QWidget(QObject):
 
     @property
     def size(self):
+        Q = self.Q
         return Q(self.qclass.size(self))
 
     @property
@@ -100,10 +101,12 @@ class QWidget(QObject):
         return self.qclass.height(self)
 
     def setAlignment(self, qalign):
-        qalign = Alignment(qalign)
+        Q = self.Q
+        qalign = Q.Alignment(qalign)
         self.qclass.setAlignment(self, qalign)
 
     def setLayout(self, qlayout):
+        Q = self.Q
         if isinstance(qlayout, str):
             qlayout = getattr(Q, qlayout + 'Layout')()
         self.qclass.setLayout(self, qlayout)

@@ -21,13 +21,14 @@ __all__ = ['QTools']
 
 from moretools import cached
 
+from .types import QTypes
 from .qid import ID
 from .align import Aligned as _Aligned
 from .label import Labeled as _Labeled
 from .button import ButtonDeco
 
 
-class QTools(type):
+class QTools(QTypes):
 
     @property
     def id(Q):
