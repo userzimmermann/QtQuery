@@ -197,8 +197,13 @@ class QMeta(QTools):
                 return Q(qlist)
 
             def __getitem__(self, id):
-                return self(id=id)
-
+                qlist = self(id=id)
+                if not qlist:
+                    raise KeyError(id)
+                if len(qlist) > 1:
+                    raise RuntimeError(
+                      "More than 1 widgets with id '%s'." % id)
+                return qlist[0]
 
         Q_.__name__ = 'Q[%s]' % (_qclass.__name__)
         return Q_
