@@ -32,6 +32,11 @@ class QString(Base):
     def __repr__(self):
         return '<%s %s>' % (type(self).__name__, repr(unicode(self)))
 
+class QPalette(Base):
+    @property
+    def background(self):
+        Q = self.Q
+        return Q(self.qclass.background(self))
 
 class QObject(Base):
     def id(self):
