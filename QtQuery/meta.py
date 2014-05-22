@@ -55,7 +55,9 @@ class QMeta(QTools):
     @cached
     def __getitem__(_Q, _qclass):
         if isclass(_qclass):
-            if not _qclass.__module__.startswith(_Q.qmodule.__name__):
+            if not (issubclass(_qclass, _Q.QtCore.QObject)
+                    or _qclass.__module__.startswith(_Q.qmodule.__name__)
+                    ):
                 raise TypeError(_qclass)
         else:
             _qclass = _Q.qclass(_qclass)
