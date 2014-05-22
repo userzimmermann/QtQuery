@@ -46,6 +46,15 @@ class QBase(with_metaclass(QMeta, object)):
                 raise TypeError(type(q))
             self.qlist.append(Q(q))
 
+    def __nonzero__(self):
+        return bool(self.qlist)
+
+    def __bool__(self):
+        return bool(self.qlist)
+
+    def __len__(self):
+        return len(self.qlist)
+
     def __getitem__(self, index):
         return self.qlist[index]
 
