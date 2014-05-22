@@ -19,6 +19,8 @@
 
 __all__ = ['ButtonDeco']
 
+from moretools import camelize
+
 
 class ButtonDeco(object):
     def __init__(self, Q):
@@ -35,7 +37,7 @@ class ButtonDeco(object):
             return self
 
         props = {
-          'text': text or self.text or func.__name__.capitalize(),
+          'text': text or self.text or camelize(func.__name__, joiner=' '),
           'clicked': func,
           }
         id = id or self.id
