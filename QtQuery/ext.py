@@ -32,6 +32,22 @@ class QString(Base):
     def __repr__(self):
         return '<%s %s>' % (type(self).__name__, repr(unicode(self)))
 
+class QSize(Base):
+    def __iter__(self):
+        yield self.qclass.width(self)
+        yield self.qclass.height(self)
+
+    def __div__(self, factor):
+        Q = self.Q
+        return Q(self.qclass.__div__(self, factor))
+
+    def __getitem__(self, index):
+        if index == 0:
+            return self.qclass.width(self)
+        if index == 1:
+            return self.qclass.height(self)
+        raise IndexError(index)
+
 class QPalette(Base):
     @property
     def background(self):
