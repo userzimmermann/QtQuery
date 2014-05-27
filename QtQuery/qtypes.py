@@ -22,6 +22,7 @@ __all__ = ['QTypes']
 from moretools import cached
 
 from .align import AlignmentBase
+from .thread import ThreadBase
 
 
 class QTypes(type):
@@ -33,3 +34,11 @@ class QTypes(type):
             FLAGS = AlignmentBase.FLAGS(Q)
 
         return Alignment
+
+    @property
+    @cached
+    def Thread(_Q):
+        class Thread(ThreadBase, _Q.QtCore.QThread):
+            Q = _Q
+
+        return Thread
