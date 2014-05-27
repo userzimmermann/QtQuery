@@ -84,3 +84,11 @@ class Aligned(with_metaclass(AlignedMeta, object)):
         Q = self.Q
         self.qalign = Q.Alignment(qalign)
         self.q = Q(q)
+
+    @property
+    def id(self):
+        return self.q.id
+
+    @id.setter
+    def id(self, value):
+        self.q.id = value
