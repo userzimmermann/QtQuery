@@ -76,7 +76,7 @@ class QMeta(QTools):
             qclass = _qclass
             qxclass = _qxclass
 
-            def __new__(cls, _=None, **kwargs):
+            def __new__(cls, *args, **kwargs):
                 return cls.qclass.__new__(cls)
 
             def __init__(self, *args, **kwargs):
@@ -108,12 +108,13 @@ class QMeta(QTools):
                                     signal.slots = [value]
                                 else:
                                     signal.slots = value
-                            return
                     else:
                         setter(value)
 
             def __getattribute__(self, name):
                 Q = type(self).Q
+                if name == 'Q':
+                    return Q
                 try:
                     object.__getattribute__(self, 'set' + camelize(name))
                 except AttributeError:
