@@ -55,6 +55,6 @@ class Signal(object):
         self._slots.append(slot)
         return slot
 
-    def run(self):
+    def run(self, *args):
         for slot in self._slots:
-            slot()
+            slot(*args)
