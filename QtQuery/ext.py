@@ -61,6 +61,15 @@ class QObject(Base):
     def setId(self, value):
         self.qclass.setObjectName(self, value)
 
+    def shortcut(self, key, func=None):
+        Q = self.Q
+        def shortcut(func):
+            return Q.Shortcut(key, self.q, func)
+
+        if func:
+            return shortcut(func)
+        return shortcut
+
     def __repr__(self):
         return '<%s id=%s>' % (type(self).__name__, repr(self.id))
 
