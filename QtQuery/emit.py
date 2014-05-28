@@ -21,8 +21,9 @@ from functools import partial
 
 
 class Emitter(object):
-    def __init__(self, q):
+    def __init__(self, q, signal=None):
         object.__setattr__(self, 'q', q)
+        object.__setattr__(self, 'signal', signal or q.signal)
 
     def __call__(self, signal, *args):
         self.q.qclass.emit(self, signal, *args)
@@ -32,9 +33,9 @@ class Emitter(object):
             def caller(*args, **kwargs):
                 getattr(self.q, name)(*args, **kwargs)
 
-            self.q.signal.emit(partial(caller, *args, **kwargs))
+            self.signal.emit(partial(caller, *args, **kwargs))
 
         return emitter
 
     def __setattr__(self, name, value):
-        self.q.signal.emit(partial(setattr, self.q, name, value))
+        self.signal.emit(partial(setattr, self.q, name, value))
