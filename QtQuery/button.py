@@ -38,7 +38,7 @@ class ButtonDeco(object):
 
         props = {
           'text': text or self.text or camelize(func.__name__, joiner=' '),
-          'clicked': func,
+          'clicked': lambda arg: func(),
           }
         id = id or self.id
         if id:
