@@ -52,7 +52,9 @@ def Q(_qmodule):
         pass
     #HACK: Get the base C++ wrapper class of the given Qt implementation:
     QMeta.qbaseclass = Q.QtCore.QObject.mro()[-2]
+    #HACK: Get the signal class:
+    QMeta.qsignalclass = type(Q.QtCore.QObject.destroyed)
     #HACK: Get the class of bound signal instances:
-    QMeta.qsignalclass = type(Q.QtCore.QObject().destroyed)
+    QMeta.qboundsignalclass = type(Q.QtCore.QObject().destroyed)
 
     return Q
