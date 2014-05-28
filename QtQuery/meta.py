@@ -21,11 +21,13 @@ __all__ = ['QMeta']
 
 from inspect import isclass
 from itertools import chain
+from functools import partial
 
 from moretools import cached, camelize
 
 from .tools import QTools
 from .signal import Signal
+from .emit import Emitter
 from . import ext
 
 
@@ -76,6 +78,8 @@ class QMeta(QTools):
             qclass = _qclass
             qxclass = _qxclass
 
+            signal = Q.qsignalclass(partial)
+
             def __new__(cls, *args, **kwargs):
                 return cls.qclass.__new__(cls)
 
@@ -96,7 +100,7 @@ class QMeta(QTools):
                           self, 'set' + camelize(name))
                     except AttributeError:
                         attr = object.__getattribute__(self, name)
-                        if isinstance(attr, Q.qsignalclass):
+                        if isinstance(attr, Q.qboundsignalclass):
                             try:
                                 signal = self.__dict__[name]
                             except KeyError:
@@ -111,6 +115,12 @@ class QMeta(QTools):
                     else:
                         setter(value)
 
+                @self.signal
+                def slot(partial):
+                    partial()
+
+                self.emit = Emitter(q=self)
+
             def __getattribute__(self, name):
                 Q = type(self).Q
                 if name == 'Q':
@@ -119,7 +129,7 @@ class QMeta(QTools):
                     object.__getattribute__(self, 'set' + camelize(name))
                 except AttributeError:
                     attr = object.__getattribute__(self, name)
-                    if isinstance(attr, Q.qsignalclass):
+                    if isinstance(attr, Q.qboundsignalclass):
                         try:
                             signal = self.__dict__[name]
                         except KeyError:
@@ -153,7 +163,7 @@ class QMeta(QTools):
                 except AttributeError:
                     pass
                 else:
-                    if isinstance(attr, Q.qsignalclass):
+                    if isinstance(attr, Q.qboundsignalclass):
                         try:
                             signal = self.__dict__[name]
                         except KeyError:
