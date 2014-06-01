@@ -191,7 +191,6 @@ class QMeta(QTools):
 
                 def find(q):
                     for q in q.children():
-                        print(q)
                         if isinstance(q, qclass):
                             for name, query in filters.items():
                                 try:
