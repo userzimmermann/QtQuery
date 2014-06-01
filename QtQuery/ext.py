@@ -21,6 +21,7 @@ from six import text_type as unicode
 
 from .align import Aligned
 from .label import Labeled
+from .disable import Disabled
 
 
 class Base(object):
@@ -140,3 +141,6 @@ class QWidget(QObject):
         if isinstance(qlayout, str):
             qlayout = getattr(Q, qlayout + 'Layout')()
         self.qclass.setLayout(self, qlayout)
+
+    def disabled(self):
+        return Disabled(q=self)
