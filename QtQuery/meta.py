@@ -26,6 +26,7 @@ from functools import partial
 from moretools import cached, camelize
 
 from .tools import QTools
+from .event import Event
 from .signal import Signal
 from .emit import Emitter
 from . import ext
@@ -100,7 +101,16 @@ class QMeta(QTools):
                           self, 'set' + camelize(name))
                     except AttributeError:
                         attr = object.__getattribute__(self, name)
-                        if isinstance(attr, Q.qboundsignalclass):
+                        if name.endswith('Event'):
+                            try:
+                                event = self.__dict__[name]
+                            except KeyError:
+                                event = self.__dict__[name] = Event(name, attr)
+                            if callable(value):
+                                event.slots = [value]
+                            else:
+                                event.slots = value
+                        elif isinstance(attr, Q.qboundsignalclass):
                             try:
                                 signal = self.__dict__[name]
                             except KeyError:
@@ -129,6 +139,12 @@ class QMeta(QTools):
                     object.__getattribute__(self, 'set' + camelize(name))
                 except AttributeError:
                     attr = object.__getattribute__(self, name)
+                    if name.endswith('Event'):
+                        try:
+                            event = self.__dict__[name]
+                        except KeyError:
+                            event = self.__dict__[name] = Event(name, attr)
+                        return event
                     if isinstance(attr, Q.qboundsignalclass):
                         try:
                             signal = self.__dict__[name]
