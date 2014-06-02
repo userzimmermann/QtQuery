@@ -22,6 +22,7 @@ from six import text_type as unicode
 from .align import Aligned
 from .label import Labeled
 from .disable import Disabled
+from .dock import Dockable
 
 
 class Base(object):
@@ -32,6 +33,7 @@ class Base(object):
 class QString(Base):
     def __repr__(self):
         return '<%s %s>' % (type(self).__name__, repr(unicode(self)))
+
 
 class QSize(Base):
     def __iter__(self):
@@ -49,11 +51,13 @@ class QSize(Base):
             return self.qclass.height(self)
         raise IndexError(index)
 
+
 class QPalette(Base):
     @property
     def background(self):
         Q = self.Q
         return Q(self.qclass.background(self))
+
 
 class QObject(Base):
     def id(self):
@@ -118,6 +122,14 @@ class QWidget(QObject):
     def __iter__(self):
         raise TypeError
 
+    def setId(self, value):
+        QObject.setId(self, value)
+        try:
+            dock = self.dock
+        except AttributeError:
+            return
+        dock.setId(value + '.dock')
+
     @property
     def size(self):
         Q = self.Q
@@ -144,3 +156,11 @@ class QWidget(QObject):
 
     def disabled(self):
         return Disabled(q=self)
+
+
+class QMainWindow(QWidget):
+    @property
+    def dockable(self):
+        Q = self.Q
+        return Dockable(Q, qwindow=self)
+
