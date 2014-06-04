@@ -97,10 +97,10 @@ class QMeta(QTools):
                         self.id = value
                         continue
                     try:
-                        setter = object.__getattribute__(
+                        setter = _qclass.__getattribute__(
                           self, 'set' + camelize(name))
                     except AttributeError:
-                        attr = object.__getattribute__(self, name)
+                        attr = _qclass.__getattribute__(self, name)
                         if name.endswith('Event'):
                             try:
                                 event = self.__dict__[name]
@@ -136,9 +136,9 @@ class QMeta(QTools):
                 if name == 'Q':
                     return Q
                 try:
-                    object.__getattribute__(self, 'set' + camelize(name))
+                    _qclass.__getattribute__(self, 'set' + camelize(name))
                 except AttributeError:
-                    attr = object.__getattribute__(self, name)
+                    attr = _qclass.__getattribute__(self, name)
                     if name.endswith('Event'):
                         try:
                             event = self.__dict__[name]
@@ -155,9 +155,9 @@ class QMeta(QTools):
                         return signal
                     return attr
                 try:
-                    getter = object.__getattribute__(self, name)
+                    getter = _qclass.__getattribute__(self, name)
                 except AttributeError:
-                    getter = object.__getattribute__(
+                    getter = _qclass.__getattribute__(
                       self, 'is' + camelize(name))
                 value = getter()
                 if isinstance(value, (Q.QtCore.QObject, Q.qbaseclass)):
@@ -175,7 +175,7 @@ class QMeta(QTools):
                     return
 
                 try:
-                    attr = object.__getattribute__(self, name)
+                    attr = _qclass.__getattribute__(self, name)
                 except AttributeError:
                     pass
                 else:
@@ -193,7 +193,7 @@ class QMeta(QTools):
                                 signal.slots = value
                         return
 
-                object.__setattr__(self, name, value)
+                _qclass.__setattr__(self, name, value)
 
             def __call__(self, qclass=None, **filters):
                 Q = type(self).Q
