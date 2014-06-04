@@ -27,7 +27,10 @@ class Dockable(object):
 
     def __call__(self, q):
         Q = self.Q
-        q.dock = Q.DockWidget(self.qwindow, widget=q)
+        q.dock = dock = Q.DockWidget(self.qwindow, widget=q)
+        id = q.objectName
+        if id:
+            dock.id = id + '.dock'
         return q
 
     def __getattr__(self, name):
