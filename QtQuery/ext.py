@@ -44,6 +44,10 @@ class QSize(Base):
         Q = self.Q
         return Q(self.qclass.__div__(self, factor))
 
+    def __truediv__(self, factor):
+        Q = self.Q
+        return Q(self.qclass.__truediv__(self, factor))
+
     def __getitem__(self, index):
         if index == 0:
             return self.qclass.width(self)
