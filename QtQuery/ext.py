@@ -168,3 +168,14 @@ class QMainWindow(QWidget):
         Q = self.Q
         return Dockable(Q, qwindow=self)
 
+
+class QSpinBox(QWidget):
+    def range(self):
+        return self.qclass.minimum(self), self.qclass.maximum(self)
+
+    def setRange(self, range_or_min, max=None):
+        try:
+            min, max = range_or_min
+        except (TypeError, ValueError):
+            min = range_or_min
+        self.qclass.setRange(self, min, max)
