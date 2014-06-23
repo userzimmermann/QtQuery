@@ -40,11 +40,17 @@ class QBase(with_metaclass(QMeta, object)):
     def __init__(self, qobjects):
         ## self.Q = Q = type(self)
         Q = self.Q
+        object.__setattr__(self, 'q', Q.Object())
+        object.__setattr__(self.q.emit, 'q', self)
         self.qlist = []
         for q in qobjects:
             if not isinstance(q, (Q.QtCore.QObject, Q.qbaseclass)):
                 raise TypeError(type(q))
             self.qlist.append(Q(q))
+
+    @property
+    def emit(self):
+        return self.q.emit
 
     def __nonzero__(self):
         return bool(self.qlist)
