@@ -48,10 +48,18 @@ class ThreadedDeco(object):
             return self
 
         def caller(func, *args, **kwargs):
+            for init in tfunc.initfuncs:
+                init(*args, **kwargs)
             thread = Q.Thread(lambda: func(*args, **kwargs))
             thread.start()
             tfunc.threads.append(thread)
 
+        def init(func):
+            tfunc.initfuncs.append(func)
+            return func
+
         tfunc = decorator(caller, func)
+        tfunc.init = init
+        tfunc.initfuncs = []
         tfunc.threads = []
         return tfunc
