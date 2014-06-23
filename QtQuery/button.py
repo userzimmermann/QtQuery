@@ -28,7 +28,7 @@ class ButtonDeco(object):
         self.id = None
         self.text = None
 
-    def __call__(self, func=None, id=None, text=None):
+    def __call__(self, func=None, id=None, text=None, **props):
         if not func:
             if id:
                 self.id = id
@@ -36,10 +36,9 @@ class ButtonDeco(object):
                 self.text = text
             return self
 
-        props = {
-          'text': text or self.text or camelize(func.__name__, joiner=' '),
-          'clicked': lambda arg: func(),
-          }
+        props['text'] = text or self.text or camelize(
+          func.__name__, joiner=' ')
+        props['clicked'] = lambda arg: func()
         id = id or self.id
         if id:
             if id is True:
