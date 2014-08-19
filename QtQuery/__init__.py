@@ -17,6 +17,14 @@
 # You should have received a copy of the GNU General Public License
 # along with QtQuery. If not, see <http://www.gnu.org/licenses/>.
 
+from . import zetup
+
+__distribution__ = zetup.DISTRIBUTION.find(__path__[0])
+__description__ = zetup.DESCRIPTION
+
+__version__ = zetup.VERSION
+__requires__ = zetup.REQUIRES.checked
+
 from six import with_metaclass
 
 __all__ = ['Q']
