@@ -51,6 +51,7 @@ class AlignedMeta(type):
     @cached
     def __getitem__(cls, _qalign):
         Q = cls.Q
+
         class Aligned(cls):
             qalign = Q.Alignment(_qalign)
 
@@ -63,6 +64,7 @@ class AlignedMeta(type):
 
     def __getattr__(cls, name):
         Q = cls.Q
+
         class Proxy(object):
             def __init__(self, consumer, attr):
                 self.consumer = consumer
