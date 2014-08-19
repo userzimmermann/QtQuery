@@ -1,13 +1,14 @@
 ~$
 \#
 \.orig$
+\.diff$
 \.rej$
 
 \.pyc
-
 ^dist/
 \.egg-info/
+^\.ipynb
 
-\.diff$
+^\.tox/
 
 \.pyproj$
