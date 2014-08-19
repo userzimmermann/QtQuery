@@ -162,6 +162,12 @@ class QWidget(QObject):
         return Disabled(q=self)
 
 
+class QLayout(QWidget):
+    def addWidget(self, q, *args):
+        Q = self.Q
+        return self.qclass.addWidget(self, Q(q).q, *args)
+
+
 class QMainWindow(QWidget):
     @property
     def dockable(self):
