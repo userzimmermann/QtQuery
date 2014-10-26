@@ -28,6 +28,7 @@ from .align import Aligned as _Aligned
 from .label import Labeled as _Labeled
 from .button import ButtonDeco
 from .thread import ThreadedDeco
+from .log import logger
 
 
 class QTools(QTypes):
@@ -76,3 +77,7 @@ class QTools(QTypes):
     @property
     def button(Q):
         return ButtonDeco(Q)
+
+    @property
+    def logger(Q):
+        return logger(Q)
