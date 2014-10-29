@@ -35,7 +35,12 @@ class QBase(with_metaclass(QMeta, object)):
             qobjects.__class__ = Q[qobjects.__class__]
             return qobjects
 
-        return object.__new__(Q)
+        try:
+            new = qobjects.qwidget
+        except AttributeError:
+            return object.__new__(Q)
+
+        return new(Q)
 
     def __init__(self, qobjects):
         ## self.Q = Q = type(self)
@@ -44,9 +49,12 @@ class QBase(with_metaclass(QMeta, object)):
         object.__setattr__(self.q.emit, 'q', self)
         self.qlist = []
         for q in qobjects:
-            if not isinstance(q, (Q.QtCore.QObject, Q.qbaseclass)):
-                raise TypeError(type(q))
-            self.qlist.append(Q(q))
+            # if not isinstance(q, (Q.QtCore.QObject, Q.qbaseclass)):
+            #     raise TypeError(type(q))
+            if isinstance(q, (Q.QtCore.QObject, Q.qbaseclass)):
+                self.qlist.append(Q(q))
+            else:
+                self.qlist.append(q)
 
     @property
     def emit(self):
@@ -91,6 +99,10 @@ class QBase(with_metaclass(QMeta, object)):
                 break
             else:
                 setter(value)
+
+    def __call__(self, *args, **kwargs):
+        Q = self.Q
+        return Q(q(*args, **kwargs) for q in self.qlist)
 
     def __dir__(self):
         if not self.qlist:
