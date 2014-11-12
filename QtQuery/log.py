@@ -30,8 +30,7 @@ def logger(Q):
 
         def append(self, level, msg):
             scrollbar = self.verticalScrollBar
-            if scrollbar.value == scrollbar.maximum:
-                scroll = True
+            scroll = scrollbar.value == scrollbar.maximum
             self.appendPlainText(msg)
             if scroll:
                 scrollbar.value = scrollbar.maximum
