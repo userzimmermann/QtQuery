@@ -41,22 +41,22 @@ class QTools(QTypes):
     def id(Q):
         return ID(Q)
 
-    def label(Q, qlabel):
+    def label(Q, qlabel, **props):
         if isinstance(qlabel, Q.Label.qclass):
             qlabel = qlabel.text
-        return Q.Label(text=qlabel)
+        return Q.Label(text=qlabel, **props)
 
-    def panel(Q, children=None):
-        return Q.Widget(children=children)
+    def panel(Q, children=None, **props):
+        return Q.Widget(children=children, **props)
 
-    def hbox(Q, children=None):
-        return Q.Widget(layout='HBox', children=children)
+    def hbox(Q, children=None, **props):
+        return Q.Widget(layout='HBox', children=children, **props)
 
-    def vbox(Q, children=None):
-        return Q.Widget(layout='VBox', children=children)
+    def vbox(Q, children=None, **props):
+        return Q.Widget(layout='VBox', children=children, **props)
 
-    def grid(Q, children=None):
-        return Q.Widget(layout='Grid', children=children)
+    def grid(Q, children=None, **props):
+        return Q.Widget(layout='Grid', children=children, **props)
 
     @property
     @cached
