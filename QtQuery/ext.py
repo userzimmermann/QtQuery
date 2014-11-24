@@ -19,6 +19,8 @@
 
 from six import text_type as unicode
 
+from moretools import isstring
+
 from .align import Aligned
 from .label import Labeled
 from .disable import Disabled
@@ -72,6 +74,7 @@ class QObject(Base):
 
     def shortcut(self, key, func=None):
         Q = self.Q
+
         def shortcut(func):
             return Q.Shortcut(key, self.q, func)
 
@@ -93,7 +96,7 @@ class QWidget(QObject):
             self.setLayout(layout)
             layout = self.qclass.layout(self)
             for rown, q in enumerate(children):
-                if isinstance(q, str):
+                if isstring(q):
                     q = Q.Label(text=q)
                     layout.addWidget(q)
                     continue
@@ -112,7 +115,7 @@ class QWidget(QObject):
                         layout.addWidget(q)
                 else:
                     for coln, q in enumerate(row):
-                        if isinstance(q, str):
+                        if isstring(q):
                             q = Q.Label(text=q)
                             layout.addWidget(q, rown, coln)
                         elif isinstance(q, Aligned):
@@ -154,7 +157,7 @@ class QWidget(QObject):
 
     def setLayout(self, qlayout):
         Q = self.Q
-        if isinstance(qlayout, str):
+        if isstring(qlayout):
             qlayout = getattr(Q, qlayout + 'Layout')()
         self.qclass.setLayout(self, qlayout)
 
