@@ -188,3 +188,7 @@ class QSpinBox(QWidget):
         except (TypeError, ValueError):
             min = range_or_min
         self.qclass.setRange(self, min, max)
+
+
+class QDoubleSpinBox(QSpinBox):
+    pass
