@@ -41,4 +41,4 @@ class QTypes(type):
         class Thread(ThreadBase, _Q.QtCore.QThread):
             Q = _Q
 
-        return Thread
+        return _Q[Thread]
