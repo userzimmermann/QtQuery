@@ -19,6 +19,7 @@
 
 __all__ = ['ThreadBase']
 
+import sys
 from types import MethodType
 
 from decorator import decorator
@@ -50,7 +51,28 @@ class ThreadedDeco(object):
         def caller(func, *args, **kwargs):
             for init in tfunc.initfuncs:
                 init(*args, **kwargs)
-            thread = Q.Thread(lambda: func(*args, **kwargs))
+
+            if tfunc.exitfuncs:
+                exc = [None, None, None]
+
+                def run():
+                    try:
+                        func(*args, **kwargs)
+                    except:
+                        exc[:] = sys.exc_info()
+            else:
+                def run():
+                    func(*args, **kwargs)
+
+            thread = Q.Thread(run)
+
+            @thread.finished
+            def _():
+                tfunc.threads.remove(thread)
+                if tfunc.exitfuncs:
+                    for exit_ in tfunc.exitfuncs:
+                        exit_(args[0], *exc)
+
             thread.start()
             tfunc.threads.append(thread)
 
@@ -58,8 +80,14 @@ class ThreadedDeco(object):
             tfunc.initfuncs.append(func)
             return func
 
+        def exit(func):
+            tfunc.exitfuncs.append(func)
+            return func
+
         tfunc = decorator(caller, func)
         tfunc.init = init
+        tfunc.exit = exit
         tfunc.initfuncs = []
+        tfunc.exitfuncs = []
         tfunc.threads = []
         return tfunc
